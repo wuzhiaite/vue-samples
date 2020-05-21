@@ -1,0 +1,158 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>手动拖动列表调整位置</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+ <div id="app">
+	<div class="table-head table-croll">
+		<ul class="croll" style="cursor:Default;">
+			<li>姓名</li>
+			<li>爱好</li>
+			<li>年龄</li>
+			<li>以及等等</li>
+			
+		</ul>
+	</div>
+	<div id="items" class="table-croll">
+		<ul  v-for="(item,index) in list" class="croll">
+			<li class="handle">
+				{{item.name}}
+			</li>
+			<li class="handle">
+				{{item.love}}
+			</li>
+			<li>
+				{{item.age}}
+			</li>
+			<li>
+				{{item.wait}}
+			</li>
+		</ul>
+	</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.8.3/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+var app = new Vue({
+	el:"#app",
+	data:function(){
+		return {
+			list:[],
+			sortable:{}
+		}
+	},
+	created(){
+		this.loadData();
+	},
+	mounted(){
+		var that = this;
+		var el = document.getElementById('items');
+		this.sortable = Sortable.create(el,{//移动后的操作
+			handle:'.handle',//可以拖模块的css
+			onEnd: function (/**Event*/evt) {
+				let itemEl = evt.item;  // dragged HTMLElement
+				let oldIndex = evt.oldIndex;
+				let newIndex = evt.newIndex;
+				let temp = that.list[oldIndex];
+				if( oldIndex < newIndex ){//向下移动调整顺序
+					for(var i = oldIndex ; i < newIndex ; i++){
+						that.list[i] = that.list[i+1];
+					}
+				}else if( oldIndex > newIndex ){//向上移动时调整顺序
+					for(var i = oldIndex ; i > newIndex ; i--){
+						that.list[i] = that.list[i-1];
+					}
+				}
+
+				that.list[newIndex] = temp;
+				console.log(that.list);
+			},
+		});	
+	},
+	methods:{
+		loadData(){
+			this.list = [
+				{
+					name:'zhangsan',
+					love:'ball',
+					age:11,
+					wait:'我就是等等'
+				},
+				{
+					name:'lisi',
+					love:'bigball',
+					age:11,
+					wait:'我就是等等'
+				},
+				{
+					name:'wangwu',
+					love:'bigbigball',
+					age:11,
+					wait:'我就是等等'
+				},
+				{
+					name:'lily',
+					love:'smallball',
+					age:11,
+					wait:'我就是等等'
+				}
+			];	
+		}
+	}
+})
+</script>
+<style>
+ .table-head{
+        background-color: #EEF4FF;
+        color: #333333;
+        font-weight: normal;
+        font-size: 13px;
+        font-family: '微软雅黑';
+        border: none;
+        padding: 12px 15px;
+        text-align:left !important;
+    }
+    .table-croll{
+        display:table;
+        padding:0px;
+        width:100%;
+    }
+    .croll {
+        display:table-row;
+        list-style: none;
+        height: 55px;
+        width:100%;
+        border-top: 0px;
+        font-size: 13px;
+        color: #333333;
+        cursor:move;
+        margin-block-start: 0em;
+        margin-block-end: 0em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        padding-inline-start: 0px;
+        line-height:50px;
+        text-align:left ! important;
+    }
+    .croll li {
+        display:table-cell ;
+        float: left;
+		width:20%;
+        text-indent: 2em;
+        list-style-type:none;
+        height:50px;
+        padding-left:5px;
+        overflow:hidden;
+        white-space:nowrap;
+        vertical-align: middle;
+    }
+	.croll:nth-of-type(even){ background:#f0f3f6;}
+
+
+</style>
+</body>
+
+</html>
